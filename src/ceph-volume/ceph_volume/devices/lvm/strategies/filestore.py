@@ -31,10 +31,9 @@ class SingleType(object):
         self.devices = devices
         self.hdds = [device for device in devices if device.sys_api['rotational'] == '1']
         self.ssds = [device for device in devices if device.sys_api['rotational'] == '0']
-        self.computed = {'osds': [], 'vgs': []}
+        self.computed = {'osds': [], 'vgs': [], 'filtered_devices': args.filtered_devices}
         self.journal_size = get_journal_size(args)
-        if not args.report:
-            self.validate()
+        self.validate()
         self.compute()
 
     @property
@@ -121,7 +120,7 @@ class SingleType(object):
                 osd['journal']['human_readable_size'] = str(journal_size)
                 osds.append(osd)
 
-        self.computed['changed'] = not any(used_osds)
+        self.computed['changed'] = len(osds) > 0
 
     def execute(self):
         """
