@@ -33,7 +33,8 @@ class SingleType(object):
         self.ssds = [device for device in devices if device.sys_api['rotational'] == '0']
         self.computed = {'osds': [], 'vgs': []}
         self.journal_size = get_journal_size(args)
-        self.validate()
+        if not args.report:
+            self.validate()
         self.compute()
 
     @property
